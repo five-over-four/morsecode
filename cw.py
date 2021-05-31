@@ -1,6 +1,7 @@
 import pygame, numpy as np
 from string import ascii_uppercase
 from collections import defaultdict
+from random import choice
 
 # audio settings
 samplerate = 48000
@@ -44,12 +45,14 @@ def gen_signal(freq):
 def morse_keyer():
 
     # morse mechanics
-    sound = gen_signal(500)
-    delay = fps * 0.8 # seconds until character is accepted.
-    dash_duration = fps * 0.20 # fifth second for dot -> dash.
+    sound = gen_signal(800)
+    delay = fps * 0.5 # seconds until character is accepted.
+    word_delay = fps * 1.5
+    dash_duration = fps * 0.15 # fifth second for dot -> dash.
     counter = 0 # how long key has been held
     key_toggle = False
     accept_counter = delay
+    new_word_counter = word_delay
     char = ""
     text = ""
 
@@ -96,6 +99,7 @@ def morse_keyer():
 
                 elif pygame.key.name(event.key) in ("z", "x", "c", "v", "b", "n", "m", ",", "."):
                     key_toggle = True
+                    new_word_counter = delay * 2
                     accept_counter = delay
                     sound.play(-1)
 
@@ -122,6 +126,12 @@ def morse_keyer():
             text += alph[char]
             accept_counter = delay
             char = ""
+        
+        if not key_toggle and text and text[-1] != " ":
+            new_word_counter -= 1
+            if new_word_counter == 0:
+                text += " / "
+                new_word_counter = word_delay
 
         pygame.display.flip()
         clock.tick(fps)
