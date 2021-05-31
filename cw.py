@@ -94,7 +94,7 @@ def morse_keyer():
                 elif event.key == pygame.K_ESCAPE:
                     exit()
 
-                elif pygame.key.name(event.key) in ("z", "x", "c", "v", "b", "n", "m", ",", ".", "-"):
+                elif pygame.key.name(event.key) in ("z", "x", "c", "v", "b", "n", "m", ",", "."):
                     key_toggle = True
                     accept_counter = delay
                     sound.play(-1)
@@ -106,7 +106,6 @@ def morse_keyer():
                     else:
                         char += "-"
                 key_toggle = False
-                print(char)
                 counter = 0
                 sound.stop()
             
@@ -123,7 +122,6 @@ def morse_keyer():
             text += alph[char]
             accept_counter = delay
             char = ""
-            print(text)
 
         pygame.display.flip()
         clock.tick(fps)
