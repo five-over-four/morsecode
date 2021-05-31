@@ -99,7 +99,7 @@ def morse_keyer():
 
                 elif pygame.key.name(event.key) in ("z", "x", "c", "v", "b", "n", "m", ",", "."):
                     key_toggle = True
-                    new_word_counter = delay * 2
+                    new_word_counter = word_delay
                     accept_counter = delay
                     sound.play(-1)
 
