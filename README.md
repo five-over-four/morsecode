@@ -1,5 +1,5 @@
 # Morse code tool
-Tap your keyboard's keys to generate morse. You can input using `zxcvbnm,.` and `space`.
+Tap your keyboard's keys to generate morse code. You can input using `zxcvbnm,.` and `space`.
 
 ![aaa](https://i.imgur.com/sXPaeV0.png)
 
@@ -7,7 +7,7 @@ Tap your keyboard's keys to generate morse. You can input using `zxcvbnm,.` and 
     + / -           Adjust press duration for a dash
     PGUP / PGDN     Adjust character accept delay
     Backspace       Clear current text
-    Enter           Toggle automatic world separation off / on
+    Enter           Toggle automatic word separation off / on
     ESC             Quit
 
     The current durations are shown in console.
