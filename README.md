@@ -1,6 +1,8 @@
 # Morse code tool
 Tap your keyboard's keys to generate morse. You can input using `zxcvbnm,.-` and `space`.
 
+![aaa](https://i.imgur.com/sXPaeV0.png)
+
 ## Special controls
     + / -           Adjust press duration for a dash
     PGUP / PGDN     Adjust character accept delay

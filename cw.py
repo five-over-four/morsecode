@@ -29,9 +29,10 @@ alph["..--.."] = "?"
 alph["-..-."] = "/"
 
 # font stuff
-font = pygame.font.SysFont("courier bold", 60)
+def gen_font(size = 60):
+    return pygame.font.SysFont("courier bold", size)
 
-def draw_text(s: str, y, colour = (0,0,0)):
+def draw_text(s: str, y, font, colour = (0,0,0)):
     text_drawing = font.render(s, True, colour)
     screen.blit(text_drawing, ((screen.get_width() - text_drawing.get_width()) // 2, y))
 
@@ -40,7 +41,7 @@ def gen_signal(freq):
     arr2 = np.c_[arr,arr]
     return pygame.sndarray.make_sound(arr2)
 
-def any_key_mode():
+def morse_keyer():
 
     # morse mechanics
     sound = gen_signal(500)
@@ -53,17 +54,14 @@ def any_key_mode():
     text = ""
 
     bg_img = pygame.image.load("UI.png")
-
-    # text stuff
-    w = 100
-    h = 50
+    font = gen_font(60)
 
     while True:
 
         screen.blit(bg_img, (0,0))
 
-        draw_text(char, (screen.get_height() - 2*h) // 2)
-        draw_text(text, screen.get_height() - h * 2)
+        draw_text(char, (screen.get_height() - 120) // 2, font)
+        draw_text(text, screen.get_height() - 100, font)
 
         for event in pygame.event.get():
             
@@ -131,4 +129,4 @@ def any_key_mode():
         clock.tick(fps)
 
 if __name__ == "__main__":
-    any_key_mode()
+    morse_keyer()
