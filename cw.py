@@ -1,7 +1,6 @@
 import pygame, numpy as np
 from string import ascii_uppercase
 from collections import defaultdict
-from random import choice
 
 # audio settings
 samplerate = 48000
@@ -14,7 +13,7 @@ clock = pygame.time.Clock()
 pygame.display.set_caption("Morse Code Keyer")
 fps = 100
 
-# morse dictionary
+# morse dictionary. A-Z then 1234567890
 morse_alph = [".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."]
 morse_num = [".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----.", "-----"]
 alph = defaultdict(lambda: "#") # if not found.
@@ -48,6 +47,7 @@ def morse_keyer():
     sound = gen_signal(800)
     delay = fps * 0.5 # seconds until character is accepted.
     word_delay = fps * 1.5
+    word_separation = True # toggle with enter.
     dash_duration = fps * 0.15 # fifth second for dot -> dash.
     counter = 0 # how long key has been held
     key_toggle = False
@@ -77,7 +77,7 @@ def morse_keyer():
 
                 # faster dashes
                 elif event.key == pygame.K_MINUS:
-                    dash_duration -= 5 if dash_duration > 10 else 0
+                    dash_duration -= 5 if dash_duration > 5 else 0
                     print("dash duration: " + str(dash_duration / fps) + "s")
 
                 # slower accept
@@ -93,6 +93,10 @@ def morse_keyer():
                 # clear current text
                 elif event.key == pygame.K_BACKSPACE:
                     text = ""
+
+                elif event.key == pygame.K_RETURN:
+                    word_separation ^= True
+                    print(f"Word separation is", word_separation)
 
                 elif event.key == pygame.K_ESCAPE:
                     exit()
@@ -121,13 +125,12 @@ def morse_keyer():
 
         if char != "":
             accept_counter -= 1
+            if accept_counter == 0:
+                text += alph[char]
+                accept_counter = delay
+                char = ""
         
-        if accept_counter == 0:
-            text += alph[char]
-            accept_counter = delay
-            char = ""
-        
-        if not key_toggle and text and text[-1] != " ":
+        if not key_toggle and text and text[-1] != " " and word_separation:
             new_word_counter -= 1
             if new_word_counter == 0:
                 text += " / "

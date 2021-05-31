@@ -7,6 +7,7 @@ Tap your keyboard's keys to generate morse. You can input using `zxcvbnm,.` and 
     + / -           Adjust press duration for a dash
     PGUP / PGDN     Adjust character accept delay
     Backspace       Clear current text
+    Enter           Toggle automatic world separation off / on
     ESC             Quit
 
     The current durations are shown in console.
