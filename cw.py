@@ -93,13 +93,10 @@ def any_key_mode():
                 elif event.key == pygame.K_BACKSPACE:
                     text = ""
 
-                elif event.key == pygame.K_PRINTSCREEN:
-                    pass
-
                 elif event.key == pygame.K_ESCAPE:
                     exit()
 
-                else:
+                elif pygame.key.name(event.key) in ("z", "x", "c", "v", "b", "n", "m", ",", ".", "-"):
                     key_toggle = True
                     accept_counter = delay
                     sound.play(-1)
