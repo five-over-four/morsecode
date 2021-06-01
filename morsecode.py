@@ -23,26 +23,26 @@ for dot_alph, letter in zip(morse_alph, ascii_uppercase):
 for dot_num, num in zip(morse_num, [1,2,3,4,5,6,7,8,9,0]):
     alph[dot_num] = str(num)
 
-alph[".-.-.-"] = "."
-alph["--..--"] = ","
-alph["..--.."] = "?"
-alph["-..-."] = "/"
+# special characters
+morse_special = [".-.-.-", "--..--", "..--..", "-.-.--", "-..-.", "---...", "-.-.-.", "-...-", ".-.-.", "-....-", ".-..-.", ".--.-."]
+special_translation = [".", ",", "?", "!", "/", ":", ";", "=", "+", "-", "\"", "@"]
+for dot_dash, char in zip(morse_special, special_translation):
+    alph[dot_dash] = char
 
-# font stuff
 def gen_font(size = 60):
     return pygame.font.SysFont("courier bold", size)
 
-def draw_text(s: str, y, font, colour = (0,0,0)):
+def draw_text(s: str, y, font, colour = (0,0,0)): # always in the x-center.
     text_drawing = font.render(s, True, colour)
     width = text_drawing.get_width()
     screen.blit(text_drawing, ((screen.get_width() - width) // 2, y))
     return width
 
-def draw_text_precise(s, x, y, font, colour = (0,0,0)):
+def draw_text_precise(s, x, y, font, colour = (0,0,0)): # x,y coordinates freely- for corner data.
     text_drawing = font.render(s, True, colour)
     screen.blit(text_drawing, (x,y))
 
-def gen_signal(freq):
+def gen_signal(freq): # expensive, don't use too often.
     arr = np.array([4096 * np.sin(2.0 * np.pi * freq * x / samplerate) for x in range(0, samplerate)]).astype(np.int16)
     arr2 = np.c_[arr,arr]
     return pygame.sndarray.make_sound(arr2)
@@ -50,11 +50,11 @@ def gen_signal(freq):
 def morse_keyer():
 
     # morse mechanics
-    sound = gen_signal(800)
+    sound = gen_signal(800) # in hertz.
     delay = fps * 0.5 # seconds until character is accepted.
-    word_delay = fps * 1.5
+    word_delay = fps * 1.5 # seconds until word split occurs.
     word_separation = True # toggle with enter.
-    dash_duration = fps * 0.15 # fifth second for dot -> dash.
+    dash_duration = fps * 0.15
     counter = 0 # how long key has been held
     key_toggle = False
     accept_counter = delay
@@ -126,6 +126,9 @@ def morse_keyer():
                 elif event.key == pygame.K_RETURN:
                     word_separation ^= True
                     print(f"Word separation is", word_separation)
+
+                elif event.key == pygame.K_t:
+                    print(text, text2)
 
                 elif event.key == pygame.K_ESCAPE:
                     exit()
