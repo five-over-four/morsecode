@@ -34,7 +34,13 @@ def gen_font(size = 60):
 
 def draw_text(s: str, y, font, colour = (0,0,0)):
     text_drawing = font.render(s, True, colour)
-    screen.blit(text_drawing, ((screen.get_width() - text_drawing.get_width()) // 2, y))
+    width = text_drawing.get_width()
+    screen.blit(text_drawing, ((screen.get_width() - width) // 2, y))
+    return width
+
+def draw_text_precise(s, x, y, font, colour = (0,0,0)):
+    text_drawing = font.render(s, True, colour)
+    screen.blit(text_drawing, (x,y))
 
 def gen_signal(freq):
     arr = np.array([4096 * np.sin(2.0 * np.pi * freq * x / samplerate) for x in range(0, samplerate)]).astype(np.int16)
@@ -54,17 +60,26 @@ def morse_keyer():
     accept_counter = delay
     new_word_counter = word_delay
     char = ""
-    text = ""
+    text = "" # first row
+    text2 = "" # second row
 
     bg_img = pygame.image.load("UI.png")
     font = gen_font(60)
+    data_font = gen_font(30)
 
     while True:
 
         screen.blit(bg_img, (0,0))
 
-        draw_text(char, (screen.get_height() - 120) // 2, font)
-        draw_text(text, screen.get_height() - 100, font)
+        # morse and text drawings
+        draw_text(char, (screen.get_height() - 120) // 2, font) # morse code
+        row1_width = draw_text(text, screen.get_height() - 120, font) # row 1
+        if text2:
+            draw_text(text2, screen.get_height() - 75, font) # row 2
+
+        # timing data drawings
+        draw_text_precise(f"dash: " + str(dash_duration / fps) + "s", 10, 7, data_font, (255,255,255))
+        draw_text_precise(f"char: " + str(delay / fps) + "s", 10, 30, data_font, (255,255,255))
 
         for event in pygame.event.get():
             
@@ -125,8 +140,12 @@ def morse_keyer():
 
         if char != "":
             accept_counter -= 1
-            if accept_counter == 0:
+            if accept_counter == 0 and row1_width < 530:
                 text += alph[char]
+                accept_counter = delay
+                char = ""
+            elif accept_counter == 0: # text is too wide, new row.
+                text2 += alph[char]
                 accept_counter = delay
                 char = ""
         
