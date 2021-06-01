@@ -80,6 +80,10 @@ def morse_keyer():
         # timing data drawings
         draw_text_precise(f"dash: " + str(dash_duration / fps) + "s", 10, 7, data_font, (255,255,255))
         draw_text_precise(f"char: " + str(delay / fps) + "s", 10, 30, data_font, (255,255,255))
+        if word_separation:
+            draw_text_precise(f"word: " + str(word_delay / fps) + "s", 10, 53, data_font, (255,255,255))
+        else:
+            draw_text_precise(f"word split is off", 10, 53, data_font, (255,255,255))
 
         for event in pygame.event.get():
             
@@ -96,14 +100,24 @@ def morse_keyer():
                     print("dash duration: " + str(dash_duration / fps) + "s")
 
                 # slower accept
-                elif event.key == pygame.K_PAGEUP:
+                elif event.key == pygame.K_UP:
                     delay += 10
                     print("current accept: " + str(delay / fps) + "s")
 
                 # faster accept
-                elif event.key == pygame.K_PAGEDOWN:
+                elif event.key == pygame.K_DOWN:
                     delay -= 10 if delay > 10 else 0
                     print("current accept: " + str(delay / fps) + "s")
+
+                # increases the time between word splits
+                elif event.key == pygame.K_RIGHT:
+                    word_delay += 10
+                    print("current word delay: " + str(word_delay / fps) + "s")
+
+                # decreases the time between word splits
+                elif event.key == pygame.K_LEFT:
+                    word_delay -= 10 if word_delay > 10 else 0
+                    print("current word delay: " + str(word_delay / fps) + "s")
 
                 # clear current text
                 elif event.key == pygame.K_BACKSPACE:
