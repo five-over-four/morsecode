@@ -1,7 +1,7 @@
 # Morse code tool
 Tap your keyboard's keys to generate morse code. You can input using `zxcvbnm,.` and `space`. The text will split onto two separate lines and various durations (such as how long a dash must be) can be adjusted manually. As the UI is just a .png image, you can switch it out with any custom image with the exact same name.
 
-![aaa](https://i.imgur.com/AOdKn1s.png)
+![aaa](https://i.imgur.com/FyXY1AF.png)
 
 ## Special controls
     + / -           Adjust press duration for a dash
