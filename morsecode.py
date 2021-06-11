@@ -16,7 +16,7 @@ fps = 100
 # morse dictionary. A-Z then 1234567890
 morse_alph = [".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--.."]
 morse_num = [".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----.", "-----"]
-alph = defaultdict(lambda: "#") # if not found.
+alph = defaultdict(lambda: "#") # default unidentified character is '#'.
 
 for dot_alph, letter in zip(morse_alph, ascii_uppercase):
     alph[dot_alph] = letter
@@ -32,17 +32,15 @@ for dot_dash, char in zip(morse_special, special_translation):
 def gen_font(size = 60):
     return pygame.font.SysFont("courier bold", size)
 
-def draw_text(s: str, y, font, colour = (0,0,0)): # always in the x-center.
+def draw_text(s: str, x, y, font, colour = (255,255,255)):
     text_drawing = font.render(s, True, colour)
-    width = text_drawing.get_width()
-    screen.blit(text_drawing, ((screen.get_width() - width) // 2, y))
-    return width
-
-def draw_text_precise(s, x, y, font, colour = (0,0,0)): # x,y coordinates freely- for corner data.
-    text_drawing = font.render(s, True, colour)
+    if not x: # center if not given.
+        width = text_drawing.get_width()
+        screen.blit(text_drawing, ((screen.get_width() - width) // 2, y))
+        return width
     screen.blit(text_drawing, (x,y))
 
-def gen_signal(freq): # expensive, don't use too often.
+def gen_signal(freq):
     arr = np.array([4096 * np.sin(2.0 * np.pi * freq * x / samplerate) for x in range(0, samplerate)]).astype(np.int16)
     arr2 = np.c_[arr,arr]
     return pygame.sndarray.make_sound(arr2)
@@ -50,40 +48,40 @@ def gen_signal(freq): # expensive, don't use too often.
 def morse_keyer():
 
     # morse mechanics
-    sound = gen_signal(800) # in hertz.
-    delay = fps * 0.5 # seconds until character is accepted.
-    word_delay = fps * 1.5 # seconds until word split occurs.
-    word_separation = True # toggle with enter.
+    sound = gen_signal(800)     # Hz sine wave.
+    delay = fps * 0.5           # seconds until character is accepted.
+    word_delay = fps * 1.5      # seconds until word split occurs.
+    word_separation = False     # toggle with enter.
     dash_duration = fps * 0.15
-    counter = 0 # how long key has been held
+    counter = 0                 # how long key has been held.
     key_toggle = False
-    accept_counter = delay
+    accept_counter = delay      # character is accepted when reaches 0.
     new_word_counter = word_delay
     char = ""
-    text = "" # first row
-    text2 = "" # second row
+    text = ""                   # first row
+    text2 = ""                  # second row
 
     bg_img = pygame.image.load("UI.png")
-    font = gen_font(60)
-    data_font = gen_font(30)
+    font = gen_font(60)         # dot-dash and translated text
+    data_font = gen_font(30)    # timing info in top left
 
     while True:
 
         screen.blit(bg_img, (0,0))
 
-        # morse and text drawings
-        draw_text(char, (screen.get_height() - 120) // 2, font) # morse code
-        row1_width = draw_text(text, screen.get_height() - 120, font) # row 1
+        # morse and translation drawings
+        draw_text(char, None, (screen.get_height() - 120) // 2, font, (0,0,0))          # morse code
+        row1_width = draw_text(text, None, screen.get_height() - 120, font, (0,0,0))    # row 1 text
         if text2:
-            draw_text(text2, screen.get_height() - 75, font) # row 2
+            draw_text(text2, None, screen.get_height() - 75, font, (0,0,0))             # row 2 text
 
-        # timing data drawings
-        draw_text_precise(f"dash: " + str(dash_duration / fps) + "s", 10, 7, data_font, (255,255,255))
-        draw_text_precise(f"char: " + str(delay / fps) + "s", 10, 30, data_font, (255,255,255))
+        # timing info text drawings
+        draw_text(f"dash: " + str(dash_duration / fps) + "s", 10, 7, data_font, (255,255,255))
+        draw_text(f"char: " + str(delay / fps) + "s", 10, 30, data_font, (255,255,255))
         if word_separation:
-            draw_text_precise(f"word: " + str(word_delay / fps) + "s", 10, 53, data_font, (255,255,255))
+            draw_text(f"word: " + str(word_delay / fps) + "s", 10, 53, data_font, (255,255,255))
         else:
-            draw_text_precise(f"word split is off", 10, 53, data_font, (255,255,255))
+            draw_text(f"word split is off", 10, 53, data_font, (255,255,255))
 
         for event in pygame.event.get():
             
